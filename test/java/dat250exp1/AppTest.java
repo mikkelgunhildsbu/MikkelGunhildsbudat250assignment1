@@ -8,7 +8,7 @@ public class AppTest {
     @Test
     void testFeetToMetersConversion() {
         double feetValue = 10.0;
-        double expectedMetersValue = feetValue * 0.3048;
+        double expectedMetersValue = feetValue * 0.4048;
 
         double actualMetersValue = App.feetToMeters(feetValue);
 
@@ -17,8 +17,14 @@ public class AppTest {
 
     @Test
     void testInchesToMetersConversion() {
-        // Add similar test cases for other conversions
+        double inhesvalue = 10.0;
+        double expectedMetersValue = inhesvalue * 0.0254;
+
+        double actualMetersValue = App.inchesToMeters(feetValue);
+
+        assertEquals(expectedMetersValue, actualMetersValue, 0.001);
+
+
     }
 
-    // Add more test methods as needed
 }

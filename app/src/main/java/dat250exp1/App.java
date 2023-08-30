@@ -43,41 +43,68 @@ public class App {
 
     public static void main(String[] args) {
         Javalin.create()
-                .get("/", ctx -> {
-                    ctx.html(WEBPAGE);
-                })
+        .get("/", ctx -> {
+            ctx.html(WEBPAGE);
+        })
                 .post("/convert", ctx -> {
                     double value = Double.parseDouble(ctx.formParam("value"));
                     String fromUnit = ctx.formParam("sunit");
                     String toUnit = ctx.formParam("tunit");
-                    double inMeters;
-                    if (fromUnit.equals("in")) {
-                        inMeters = value * IN_TO_METER;
-                    } else if (fromUnit.equals("ft")) {
-                        inMeters = value * FT_TO_METER;
-                    } else if (fromUnit.equals("mi")) {
-                        inMeters = value * MI_TO_METER;
-                    } else if (fromUnit.equals("m")) {
-                        inMeters = value;
-                    } else {
-                        inMeters = Double.NaN;
-                    }
-                    double result;
-                    if (toUnit.equals("in")) {
-                        result = inMeters / IN_TO_METER;
-                    } else if (toUnit.equals("ft")) {
-                        result = inMeters / FT_TO_METER;
-                    } else if (toUnit.equals("mi")) {
-                        result = inMeters / MI_TO_METER;
-                    } else if (toUnit.equals("m")) {
-                        result = inMeters;
-                    } else {
-                        result = Double.NaN;
-                    }
+
+                    double result = convertUnits(value, fromUnit, toUnit);
+
                     ctx.result(Double.toString(result));
                 })
                 .start(9000);
     }
+
+    /** Converts a value from one unit to another.
+      1      *
+            * @param value    The value to be converted.
+            * @param fromUnit The unit to convert from (e.g., "in", "ft", "mi", "m").
+            * @param toUnit   The unit to convert to (e.g., "in", "ft", "mi", "m").
+            * @return The converted value.
+     */
+    private static double convertUnits(double value, String fromUnit, String toUnit) {
+        double fromMultiplier = 1.0; // Default value
+        double toMultiplier = 1.0;   // Default value
+
+        // Determine multipliers based on units
+        if (fromUnit.equals("in")) {
+            fromMultiplier = IN_TO_METER;
+        } else if (fromUnit.equals("ft")) {
+            fromMultiplier = FT_TO_METER;
+        } else if (fromUnit.equals("mi")) {
+            fromMultiplier = MI_TO_METER;
+        } else if (fromUnit.equals("m")) {
+            // No need to change the default value
+        } else {
+            // Handle invalid unit
+            return Double.NaN;
+        }
+
+        if (toUnit.equals("in")) {
+            toMultiplier = 1 / IN_TO_METER;
+        } else if (toUnit.equals("ft")) {
+            toMultiplier = 1 / FT_TO_METER;
+        } else if (toUnit.equals("mi")) {
+            toMultiplier = 1 / MI_TO_METER;
+        } else if (toUnit.equals("m")) {
+            // No need to change the default value
+        } else {
+            // Handle invalid unit
+            return Double.NaN;
+        }
+
+        // Perform conversion
+        double inMeters = value * fromMultiplier;
+        double result = inMeters * toMultiplier;
+
+        return result;
+    }
+
+
+
 
 
 }
